@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: dmht-lyrics-library
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --workers 1 --threads 4 --bind 0.0.0.0:$PORT app:app
+    healthCheckPath: /health
+    disk:
+      name: lyrics-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: OWNER_USER
+        sync: false
+      - key: OWNER_PASSWORD_HASH
+        sync: false
+      - key: HOST_USER
+        sync: false
+      - key: HOST_PASSWORD_HASH
+        sync: false
+      - key: LYRICS_DB
+        value: /data/lyrics.sqlite3
